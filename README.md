@@ -12,25 +12,31 @@
 
 # Description
 
-Social App is a React-based web application that simulates a social network. It allows users to register, follow other users, create posts, and use a messaging service with other users.
+Social App is a React + TypeScript web client for the Social API. It allows users to register, follow each other, create posts (with photos/videos), and comment and like posts.
+
+This first version targets the Social API only — the messaging API is not implemented yet.
 
 ## Features
 
-- **User Registration:** Users can sign up on the platform by providing basic information.
+- **User Registration & Login:** Sign up, log in, update your profile, and delete your account.
 
-- **Follow Other Users:** Users can follow other users and view their posts in their feed.
+- **Posts:** Create, edit, and delete posts (public or followers-only, draft/published/archived), optionally with photo/video attachments.
 
-- **Posts:** Users can create, edit, and delete posts, which will be visible to their followers.
+- **Feed:** Browse a paginated feed of public posts and posts from people you follow.
 
-- **Messaging:** Users can send private messages to other users.
+- **Comments & Likes:** Comment on posts and like/unlike them.
+
+- **Followers:** Follow and unfollow other users, and browse followers/following lists.
 
 ## Technologies Used
 
-- **React:** The application is built using the React library to create interactive user interfaces.
-
-- **Social API:** The Social API is used to retrieve user and post information.
-
-- **Social Messaging API:** The Social Messaging API is used to manage the messaging service.
+- **React 19 + TypeScript** — UI library and static typing.
+- **Vite** — dev server and build tool.
+- **Tailwind CSS** — styling.
+- **React Router** — client-side routing.
+- **TanStack Query** — server state, caching, and mutations.
+- **Axios** — HTTP client.
+- **Social API** — backend used to retrieve/mutate user, post, comment, like, and follow data.
 
 ## System Architecture
 
@@ -46,38 +52,28 @@ The client-side architecture diagram provides an overview of how the various com
 
 2. Navigate to the project directory using `cd social-client`.
 
-3. Install the dependencies using npm or yarn:
+3. Install the dependencies:
 
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
-4. Configure the necessary environment variables for connecting to the APIs (e.g., API keys, URLs, etc.).
-
-5. Copy the example file `.env.dev` and rename it to `.env`:
+4. Copy the example env file:
 
    ```bash
-   cp .env.dev .env
+   cp .env.example .env.local
    ```
 
-6. Edit the `.env` file and configure the required environment variables:
+5. Edit `.env.local` and point it at your running Social API instance:
 
    ```dotenv
-   PORT=8000
-   REACT_APP_SOCIAL_API_URL=URL_OF_SOCIAL_API
-   REACT_APP_SOCIAL_MESSAGING_API_URL=URL_OF_MESSAGING_API
+   VITE_API_BASE_URL=http://localhost:3000/api/v1
    ```
 
-   Replace `URL_OF_SOCIAL_API` and `URL_OF_MESSAGING_API`with the appropriate URLs provided by the respective APIs.
-
-7. Start the application:
+6. Start the application:
 
    ```bash
-   npm start
-   # or
-   yarn start
+   npm run dev
    ```
 
 The application will be available at `http://localhost:8000`.
@@ -85,6 +81,6 @@ The application will be available at `http://localhost:8000`.
 ## Usage
 
 1. Register or log in to the application.
-2. Explore the application and start following other users.
-3. Create posts and share your content with your followers.
-4. Use the messaging service to communicate with other users.
+2. Explore the feed, and follow other users to see their posts.
+3. Create posts (with or without media) and share your content.
+4. Comment and like posts, and manage your profile from `/profile/me`.

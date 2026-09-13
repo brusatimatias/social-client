@@ -11,14 +11,18 @@ Stack: Vite, TypeScript (strict), Tailwind CSS, React Router (classic component 
 ## Commands
 
 ```bash
-npm run dev       # start dev server on port 8000 (see vite.config.ts)
-npm run build     # tsc -b && vite build — type-check gate, then production build
-npx tsc -b        # type-check only, no build
-npx oxlint src    # lint (this project uses oxlint, not eslint)
-npm run preview   # preview a production build
+npm run dev         # start dev server on port 8000 (see vite.config.ts)
+npm run build       # tsc -b && vite build — type-check gate, then production build
+npm run typecheck   # tsc -b only, no build
+npm run lint        # oxlint (this project uses oxlint, not eslint)
+npm test            # vitest run — single run, used in CI
+npm run test:watch  # vitest watch mode
+npm run preview     # preview a production build
 ```
 
-There is no test suite in this project yet.
+CI (`.github/workflows/ci.yml`) runs three independent parallel jobs on every push/PR to `main`/`develop`: `lint-and-typecheck` (oxlint + tsc, grouped since both are static checks with no runtime), `test`, and `build`.
+
+Testing uses Vitest + React Testing Library (`vitest.config.ts` merges `vite.config.ts` so the `@/` alias resolves in tests; `src/setupTests.ts` wires up jest-dom matchers and RTL cleanup). The suite is intentionally minimal right now (`src/lib/utils.test.ts`, `src/components/Button.test.tsx`) — it proves the harness works end to end (jsdom, RTL, the `@/` alias, jest-dom matchers) rather than covering the app. Building out real coverage (API hooks, auth flow, forms) has not been prioritized yet; add tests as you touch code rather than in a dedicated pass, unless told otherwise.
 
 The API base URL is configured via `VITE_API_BASE_URL` (see `.env.example` / `.env.development`), defaulting to `http://localhost:3000/api/v1`. A real Rails backend must be running there for the app to do anything beyond render empty/loading states.
 

@@ -36,6 +36,7 @@ This first version targets the Social API only — the messaging API is not impl
 - **React Router** — client-side routing.
 - **TanStack Query** — server state, caching, and mutations.
 - **Axios** — HTTP client.
+- **Vitest + React Testing Library** — testing.
 - **Social API** — backend used to retrieve/mutate user, post, comment, like, and follow data.
 
 ## System Architecture

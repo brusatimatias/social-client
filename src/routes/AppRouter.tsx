@@ -13,11 +13,8 @@ const ExplorePage = lazy(() =>
   import('@/features/explore/ExplorePage').then((m) => ({ default: m.ExplorePage })),
 )
 const FeedPage = lazy(() => import('@/features/feed/FeedPage').then((m) => ({ default: m.FeedPage })))
-const FollowersPage = lazy(() =>
-  import('@/features/followers/FollowersPage').then((m) => ({ default: m.FollowersPage })),
-)
-const FollowingPage = lazy(() =>
-  import('@/features/followers/FollowingPage').then((m) => ({ default: m.FollowingPage })),
+const FollowListPage = lazy(() =>
+  import('@/features/followers/FollowListPage').then((m) => ({ default: m.FollowListPage })),
 )
 const MyPostsPage = lazy(() =>
   import('@/features/posts/MyPostsPage').then((m) => ({ default: m.MyPostsPage })),
@@ -55,8 +52,8 @@ export function AppRouter() {
             <Route path="/posts" element={<MyPostsPage />} />
             <Route path="/posts/:id" element={<PostDetailPage />} />
             <Route path="/profile/me" element={<MyProfilePage />} />
-            <Route path="/followers" element={<FollowersPage />} />
-            <Route path="/following" element={<FollowingPage />} />
+            <Route path="/followers" element={<FollowListPage key="followers" kind="followers" />} />
+            <Route path="/following" element={<FollowListPage key="following" kind="following" />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

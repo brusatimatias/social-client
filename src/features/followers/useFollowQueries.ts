@@ -3,10 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { followUser, listFollowers, listFollowing, unfollowUser } from '@/api/users'
 import { rememberUsers } from '@/lib/userDirectory'
 
-export function useFollowers(userId?: string) {
+export function useFollowing(userId?: string) {
   const query = useQuery({
-    queryKey: ['followers', userId ?? 'me'],
-    queryFn: () => listFollowers(userId),
+    queryKey: ['following', userId ?? 'me'],
+    queryFn: () => listFollowing(userId),
   })
   useEffect(() => {
     if (query.data) rememberUsers(query.data)
@@ -14,10 +14,15 @@ export function useFollowers(userId?: string) {
   return query
 }
 
-export function useFollowing(userId?: string) {
+export type FollowListKind = 'followers' | 'following'
+
+export function useFollowList(kind: FollowListKind, userId?: string) {
+  // A single unconditional useQuery call — only the fetcher/queryKey branch on
+  // `kind`, so this never risks violating the rules of hooks.
+  const fetcher = kind === 'followers' ? listFollowers : listFollowing
   const query = useQuery({
-    queryKey: ['following', userId ?? 'me'],
-    queryFn: () => listFollowing(userId),
+    queryKey: [kind, userId ?? 'me'],
+    queryFn: () => fetcher(userId),
   })
   useEffect(() => {
     if (query.data) rememberUsers(query.data)

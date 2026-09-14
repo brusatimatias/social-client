@@ -1,4 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { AuthProvider } from '@/context/AuthContext'
 import { ToastProvider } from '@/context/ToastContext'
 import { queryClient } from '@/lib/queryClient'
@@ -9,7 +10,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <AuthProvider>
-          <AppRouter />
+          <ErrorBoundary>
+            <AppRouter />
+          </ErrorBoundary>
         </AuthProvider>
       </ToastProvider>
     </QueryClientProvider>

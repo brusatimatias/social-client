@@ -21,6 +21,7 @@ export interface UpdateMePayload {
   email?: string
   password?: string
   password_confirmation?: string
+  avatar?: File
 }
 
 interface AuthResponse {
@@ -52,7 +53,18 @@ export async function getMe() {
 }
 
 export async function updateMe(payload: UpdateMePayload) {
-  const { data } = await apiClient.patch<ApiEnvelope<User>>('/auth/me', { user: payload })
+  if (!payload.avatar) {
+    const { data } = await apiClient.patch<ApiEnvelope<User>>('/auth/me', { user: payload })
+    return data.data
+  }
+
+  const { avatar, ...fields } = payload
+  const form = new FormData()
+  Object.entries(fields).forEach(([key, value]) => {
+    if (value !== undefined) form.append(`user[${key}]`, value)
+  })
+  form.append('user[avatar]', avatar)
+  const { data } = await apiClient.patch<ApiEnvelope<User>>('/auth/me', form)
   return data.data
 }
 

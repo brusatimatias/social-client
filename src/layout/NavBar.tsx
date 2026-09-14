@@ -46,7 +46,7 @@ export function NavBar() {
 
         <div className="hidden items-center gap-3 sm:flex">
           <NavLink to="/profile/me" className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-gray-100">
-            <Avatar name={user?.name} lastname={user?.lastname} size="sm" />
+            <Avatar name={user?.name} lastname={user?.lastname} avatarUrl={user?.avatar_url} size="sm" />
             <span className="text-sm font-medium text-gray-700">{user?.name}</span>
           </NavLink>
           <button

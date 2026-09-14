@@ -7,6 +7,7 @@ export interface DirectoryUser {
   uuid: string
   name: string
   lastname: string
+  avatarUrl?: string
 }
 
 const directory = new Map<number, DirectoryUser>()
@@ -20,7 +21,17 @@ export function rememberUser(user: Partial<User> & { id?: unknown; uuid?: unknow
   const id = typeof user.id === 'number' ? user.id : undefined
   const uuid = typeof user.uuid === 'string' ? user.uuid : undefined
   if (id === undefined || uuid === undefined) return
-  directory.set(id, { id, uuid, name: user.name ?? '', lastname: user.lastname ?? '' })
+  const existing = directory.get(id)
+  // Some payloads (e.g. post.author) omit avatar_url entirely rather than sending
+  // it as null — don't let those clobber a richer avatar we cached elsewhere.
+  const avatarUrl = 'avatar_url' in user ? (user.avatar_url ?? undefined) : existing?.avatarUrl
+  directory.set(id, {
+    id,
+    uuid,
+    name: user.name ?? existing?.name ?? '',
+    lastname: user.lastname ?? existing?.lastname ?? '',
+    avatarUrl,
+  })
   notify()
 }
 

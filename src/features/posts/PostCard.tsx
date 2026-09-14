@@ -24,12 +24,15 @@ export function PostCard({ post, onEdit, onDelete }: PostCardProps) {
   const isMine = me?.id !== undefined && me.id === post.user_id
   const author = post.author ?? directoryAuthor
   const authorLabel = isMine ? 'You' : author ? `${author.name} ${author.lastname}` : 'Unknown user'
+  // post.author never carries avatar_url (only {uuid, id, name, lastname}) — the
+  // directory may know it from a richer source (comments, likes, search, follows).
+  const avatarUrl = post.author?.avatar_url ?? directoryAuthor?.avatarUrl
 
   return (
     <Card className="p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3">
-          <Avatar name={author?.name} lastname={author?.lastname} />
+          <Avatar name={author?.name} lastname={author?.lastname} avatarUrl={avatarUrl} />
           <div>
             <p className="text-sm font-semibold text-gray-900">{authorLabel}</p>
             <p className="text-xs text-gray-400">{formatDate(post.created_at)}</p>

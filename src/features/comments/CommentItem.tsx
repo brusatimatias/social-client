@@ -28,7 +28,7 @@ export function CommentItem({
 
   return (
     <div className="flex gap-3 py-3">
-      <Avatar name={author?.name} lastname={author?.lastname} size="sm" />
+      <Avatar name={author?.name} lastname={author?.lastname} avatarUrl={author?.avatar_url} size="sm" />
       <div className="flex-1">
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-semibold text-gray-900">

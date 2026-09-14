@@ -4,6 +4,7 @@ export interface User {
   name: string
   lastname: string
   email?: string
+  avatar_url?: string | null
   created_at?: string
   followers_count?: number
   following_count?: number

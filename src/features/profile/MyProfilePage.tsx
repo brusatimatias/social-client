@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { deleteMe, updateMe } from '@/api/auth'
@@ -8,9 +8,13 @@ import { Card } from '@/components/Card'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ErrorBanner } from '@/components/ErrorState'
 import { Input } from '@/components/Input'
+import { Spinner } from '@/components/Spinner'
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { extractApiErrors } from '@/lib/errors'
+
+const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+const AVATAR_MAX_BYTES = 5 * 1024 * 1024
 
 export function MyProfilePage() {
   const { user, updateUser, logout } = useAuth()
@@ -20,6 +24,14 @@ export function MyProfilePage() {
   const [form, setForm] = useState({ name: user?.name ?? '', lastname: user?.lastname ?? '' })
   const [errors, setErrors] = useState<string[]>([])
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview)
+    }
+  }, [avatarPreview])
 
   const saveMutation = useMutation({
     mutationFn: () => updateMe(form),
@@ -29,6 +41,34 @@ export function MyProfilePage() {
     },
     onError: (error) => setErrors(extractApiErrors(error)),
   })
+
+  const avatarMutation = useMutation({
+    mutationFn: (file: File) => updateMe({ avatar: file }),
+    onSuccess: (updated) => {
+      updateUser(updated)
+      showToast('Profile photo updated', 'success')
+    },
+    onError: (error) => {
+      showToast(extractApiErrors(error)[0], 'error')
+      setAvatarPreview(null)
+    },
+  })
+
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    if (!AVATAR_TYPES.includes(file.type)) {
+      showToast("That file type isn't supported for a profile photo.", 'error')
+      return
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      showToast('Profile photo must be 5MB or smaller.', 'error')
+      return
+    }
+    setAvatarPreview(URL.createObjectURL(file))
+    avatarMutation.mutate(file)
+  }
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteMe(),
@@ -54,7 +94,30 @@ export function MyProfilePage() {
 
       <Card className="p-6">
         <div className="flex items-center gap-4">
-          <Avatar name={user?.name} lastname={user?.lastname} size="lg" />
+          <button
+            type="button"
+            onClick={() => avatarInputRef.current?.click()}
+            disabled={avatarMutation.isPending}
+            className="group relative rounded-full disabled:cursor-not-allowed"
+            aria-label="Change profile photo"
+          >
+            <Avatar
+              name={user?.name}
+              lastname={user?.lastname}
+              avatarUrl={avatarPreview ?? user?.avatar_url}
+              size="lg"
+            />
+            <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-[10px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+              {avatarMutation.isPending ? <Spinner size="sm" /> : 'Change'}
+            </span>
+          </button>
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept={AVATAR_TYPES.join(',')}
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
           <div>
             <p className="text-base font-semibold text-gray-900">
               {user?.name} {user?.lastname}

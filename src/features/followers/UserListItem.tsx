@@ -15,7 +15,7 @@ export function UserListItem({ user, isSelf, isFollowing, pending, onToggleFollo
   return (
     <div className="flex items-center justify-between gap-3 py-3">
       <div className="flex items-center gap-3">
-        <Avatar name={user.name} lastname={user.lastname} />
+        <Avatar name={user.name} lastname={user.lastname} avatarUrl={user.avatar_url} />
         <div>
           <p className="text-sm font-semibold text-gray-900">
             {user.name} {user.lastname}

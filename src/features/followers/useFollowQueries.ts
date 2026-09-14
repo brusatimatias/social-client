@@ -37,19 +37,22 @@ export function useMyFollowingIds() {
 
 export function useFollowMutations() {
   const queryClient = useQueryClient()
-  const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ['followers'] })
-    queryClient.invalidateQueries({ queryKey: ['following'] })
+  // Following/unfollowing user X only ever changes two lists: my own
+  // following list, and X's followers list — never anyone else's, so there's
+  // no need to invalidate every cached ['followers'|'following', *] variant.
+  const invalidateFor = (targetUuid: string) => {
+    queryClient.invalidateQueries({ queryKey: ['following', 'me'] })
+    queryClient.invalidateQueries({ queryKey: ['followers', targetUuid] })
   }
 
   const follow = useMutation({
     mutationFn: (userId: string) => followUser(userId),
-    onSuccess: invalidate,
+    onSuccess: (_data, userId) => invalidateFor(userId),
   })
 
   const unfollow = useMutation({
     mutationFn: (userId: string) => unfollowUser(userId),
-    onSuccess: invalidate,
+    onSuccess: (_data, userId) => invalidateFor(userId),
   })
 
   return { follow, unfollow }

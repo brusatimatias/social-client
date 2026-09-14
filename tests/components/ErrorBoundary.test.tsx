@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { ErrorBoundary } from './ErrorBoundary'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 function Bomb({ shouldThrow }: { shouldThrow: boolean }) {
   if (shouldThrow) throw new Error('boom')

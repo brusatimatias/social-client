@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cn, initials, isVideoUrl } from './utils'
+import { cn, formatDate, initials, isVideoUrl } from '@/lib/utils'
 
 describe('cn', () => {
   it('joins truthy class names and drops falsy ones', () => {
@@ -24,5 +24,19 @@ describe('isVideoUrl', () => {
 
   it('treats everything else as an image', () => {
     expect(isVideoUrl('https://cdn.example.com/blob/redirect/abc/photo.png')).toBe(false)
+  })
+})
+
+describe('formatDate', () => {
+  it('formats a valid ISO date string', () => {
+    expect(formatDate('2024-01-15T10:30:00Z')).not.toBe('')
+  })
+
+  it('returns an empty string for an invalid date', () => {
+    expect(formatDate('not-a-date')).toBe('')
+  })
+
+  it('returns an empty string when given nothing', () => {
+    expect(formatDate(undefined)).toBe('')
   })
 })

@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { ApiEnvelope } from '@/types/api'
+import type { ApiEnvelope, ApiMeta } from '@/types/api'
 import type { User } from '@/types/user'
 
 export async function listFollowers(userId?: string) {
@@ -14,6 +14,17 @@ export async function listFollowing(userId?: string) {
     params: userId ? { user_id: userId } : undefined,
   })
   return data.data
+}
+
+export interface SearchUsersParams {
+  q?: string
+  page?: number
+  per_page?: number
+}
+
+export async function searchUsers(params: SearchUsersParams = {}) {
+  const { data } = await apiClient.get<ApiEnvelope<User[]>>('/users/search', { params })
+  return { users: data.data, meta: data.meta as ApiMeta }
 }
 
 export async function followUser(userId: string) {

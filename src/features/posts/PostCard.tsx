@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext'
 import { formatDate, isVideoUrl } from '@/lib/utils'
 import { useDirectoryUser } from '@/lib/userDirectory'
 import { LikeButton } from '@/features/likes/LikeButton'
+import { FollowAuthorButton } from './FollowAuthorButton'
 import type { Post } from '@/types/post'
 
 interface PostCardProps {
@@ -35,6 +36,7 @@ export function PostCard({ post, onEdit, onDelete }: PostCardProps) {
           </div>
         </div>
         <div className="flex items-center gap-1.5">
+          {!isMine && author?.uuid && <FollowAuthorButton authorUuid={author.uuid} />}
           <Badge tone={statusTone[post.status]}>{post.status}</Badge>
           <Badge>{post.visibility}</Badge>
         </div>

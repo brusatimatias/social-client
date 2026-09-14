@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { RegisterPage } from '@/features/auth/RegisterPage'
+import { ExplorePage } from '@/features/explore/ExplorePage'
 import { FeedPage } from '@/features/feed/FeedPage'
 import { FollowersPage } from '@/features/followers/FollowersPage'
 import { FollowingPage } from '@/features/followers/FollowingPage'
@@ -24,6 +25,7 @@ export function AppRouter() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/feed" element={<FeedPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/posts" element={<MyPostsPage />} />
           <Route path="/posts/:id" element={<PostDetailPage />} />
           <Route path="/profile/me" element={<MyProfilePage />} />

@@ -3,7 +3,7 @@ export interface User {
   uuid: string
   name: string
   lastname: string
-  email: string
+  email?: string
   created_at?: string
   followers_count?: number
   following_count?: number

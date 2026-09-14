@@ -8,7 +8,7 @@ import { usePost } from './usePostsQueries'
 
 export function PostDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const { data: post, isLoading, isError, refetch } = usePost(id ?? '')
+  const { data: post, isLoading, isError, refetch } = usePost(Number(id))
 
   return (
     <div className="flex flex-col gap-4">

@@ -2,9 +2,11 @@ import axios from 'axios'
 import { triggerUnauthorized } from '@/api/client'
 import { clearToken, getToken } from '@/api/tokenStore'
 
-const baseURL = import.meta.env.VITE_MESSAGING_API_BASE_URL ?? 'http://localhost:3001'
+// VITE_MESSAGING_API_BASE_URL is the bare origin (also used as-is for the
+// Socket.IO connection in messagingSocket.ts) — REST routes live under /api/v1.
+const origin = import.meta.env.VITE_MESSAGING_API_BASE_URL ?? 'http://localhost:3001'
 
-export const messagingApiClient = axios.create({ baseURL })
+export const messagingApiClient = axios.create({ baseURL: `${origin}/api/v1` })
 
 export interface MessagingApiEnvelope<T> {
   data: T

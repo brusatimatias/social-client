@@ -33,7 +33,7 @@ The suite has real coverage across the app: `lib/*` and pure logic (`likeState`,
 
 Add tests alongside any new/changed code under `tests/<mirrored path>/`; there's no dedicated coverage pass, this is now the standing expectation rather than a deferred nice-to-have.
 
-The Social API base URL is configured via `VITE_API_BASE_URL` (see `.env.example` / `.env.development`), defaulting to `http://localhost:3000/api/v1`. A real Rails backend must be running there for the app to do anything beyond render empty/loading states. The Social Messaging API base URL is configured separately via `VITE_MESSAGING_API_BASE_URL`, defaulting to `http://localhost:3001` — a real messaging backend must be running there (with CORS allowing the Vite dev origin) for `/messages` and its Socket.IO connection to work.
+The Social API base URL is configured via `VITE_API_BASE_URL` (see `.env.example` / `.env.development`), defaulting to `http://localhost:3000/api/v1`. A real Rails backend must be running there for the app to do anything beyond render empty/loading states. The Social Messaging API base URL is configured separately via `VITE_MESSAGING_API_BASE_URL`, defaulting to `http://localhost:3001` — a real messaging backend must be running there (with CORS allowing the Vite dev origin) for `/messages` and its Socket.IO connection to work. This env var is the **bare origin**, not a full API base URL: `src/api/messaging/client.ts` appends `/api/v1` itself for REST calls, while `src/lib/messagingSocket.ts` connects the Socket.IO client to the origin as-is, since the server mounts the socket directly on the HTTP server rather than under `/api/v1`.
 
 ## Architecture
 

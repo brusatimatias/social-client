@@ -25,6 +25,12 @@ const PostDetailPage = lazy(() =>
 const MyProfilePage = lazy(() =>
   import('@/features/profile/MyProfilePage').then((m) => ({ default: m.MyProfilePage })),
 )
+const ConversationsPage = lazy(() =>
+  import('@/features/messaging/ConversationsPage').then((m) => ({ default: m.ConversationsPage })),
+)
+const ConversationDetailPage = lazy(() =>
+  import('@/features/messaging/ConversationDetailPage').then((m) => ({ default: m.ConversationDetailPage })),
+)
 
 function RouteFallback() {
   return (
@@ -52,6 +58,8 @@ export function AppRouter() {
             <Route path="/posts" element={<MyPostsPage />} />
             <Route path="/posts/:id" element={<PostDetailPage />} />
             <Route path="/profile/me" element={<MyProfilePage />} />
+            <Route path="/messages" element={<ConversationsPage />} />
+            <Route path="/messages/:conversationId" element={<ConversationDetailPage />} />
             <Route path="/followers" element={<FollowListPage key="followers" kind="followers" />} />
             <Route path="/following" element={<FollowListPage key="following" kind="following" />} />
           </Route>

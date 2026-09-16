@@ -11,6 +11,11 @@ export function onUnauthorized(handler: () => void): void {
   unauthorizedHandler = handler
 }
 
+// Lets other API clients invoke the same AuthContext-registered handler on their own 401s.
+export function triggerUnauthorized(): void {
+  unauthorizedHandler?.()
+}
+
 apiClient.interceptors.request.use((config) => {
   const token = getToken()
   if (token) {

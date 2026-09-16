@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { describe, expect, it } from 'vitest'
-import { extractApiErrors } from '@/lib/errors'
+import { extractApiErrors, extractMessagingApiErrors } from '@/lib/errors'
 
 function makeAxiosError(data: unknown): AxiosError {
   const error = new AxiosError('Request failed')
@@ -29,5 +29,27 @@ describe('extractApiErrors', () => {
 
   it('falls back to a generic message for a non-Axios error', () => {
     expect(extractApiErrors(new Error('boom'))).toEqual(['Something went wrong. Please try again.'])
+  })
+})
+
+describe('extractMessagingApiErrors', () => {
+  it('returns the nested error message from an Axios error response', () => {
+    expect(extractMessagingApiErrors(makeAxiosError({ error: { message: 'Missing auth token' } }))).toEqual([
+      'Missing auth token',
+    ])
+  })
+
+  it('falls back to a generic message when the error message is empty', () => {
+    expect(extractMessagingApiErrors(makeAxiosError({ error: { message: '' } }))).toEqual([
+      'Something went wrong. Please try again.',
+    ])
+  })
+
+  it('falls back to a generic message when there is no error field', () => {
+    expect(extractMessagingApiErrors(makeAxiosError({}))).toEqual(['Something went wrong. Please try again.'])
+  })
+
+  it('falls back to a generic message for a non-Axios error', () => {
+    expect(extractMessagingApiErrors(new Error('boom'))).toEqual(['Something went wrong. Please try again.'])
   })
 })

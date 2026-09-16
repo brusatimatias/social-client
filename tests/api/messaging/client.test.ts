@@ -1,49 +1,51 @@
 import type { AxiosAdapter } from 'axios'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { apiClient, onUnauthorized, triggerUnauthorized } from '@/api/client'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { onUnauthorized } from '@/api/client'
+import { messagingApiClient } from '@/api/messaging/client'
 import { getToken, setToken } from '@/api/tokenStore'
 
-const originalAdapter = apiClient.defaults.adapter
+const originalAdapter = messagingApiClient.defaults.adapter
 
 afterEach(() => {
-  apiClient.defaults.adapter = originalAdapter
+  messagingApiClient.defaults.adapter = originalAdapter
   setToken(null)
 })
 
-describe('apiClient request interceptor', () => {
+describe('messagingApiClient', () => {
+  it('uses a baseURL rooted at /api/v1', () => {
+    expect(messagingApiClient.defaults.baseURL).toMatch(/\/api\/v1$/)
+  })
+
   it('attaches a bearer token header when one is set', async () => {
     setToken('abc123')
     let seenAuth: unknown
-    apiClient.defaults.adapter = (async (config) => {
+    messagingApiClient.defaults.adapter = (async (config) => {
       seenAuth = config.headers.Authorization
       return { data: {}, status: 200, statusText: 'OK', headers: {}, config }
     }) as AxiosAdapter
 
-    await apiClient.get('/whoami')
+    await messagingApiClient.get('/conversations')
     expect(seenAuth).toBe('Bearer abc123')
   })
 
   it('sends no Authorization header when there is no token', async () => {
     setToken(null)
     let seenAuth: unknown
-    apiClient.defaults.adapter = (async (config) => {
+    messagingApiClient.defaults.adapter = (async (config) => {
       seenAuth = config.headers.Authorization
       return { data: {}, status: 200, statusText: 'OK', headers: {}, config }
     }) as AxiosAdapter
 
-    await apiClient.get('/whoami')
+    await messagingApiClient.get('/conversations')
     expect(seenAuth).toBeUndefined()
   })
-})
 
-describe('apiClient response interceptor', () => {
-  beforeEach(() => setToken('abc123'))
-
-  it('clears the token and notifies the unauthorized handler on a 401', async () => {
+  it('clears the token and triggers the shared unauthorized handler on a 401', async () => {
+    setToken('abc123')
     const handler = vi.fn()
     onUnauthorized(handler)
 
-    apiClient.defaults.adapter = (async (config) => {
+    messagingApiClient.defaults.adapter = (async (config) => {
       const error = Object.assign(new Error('Unauthorized'), {
         isAxiosError: true,
         response: { status: 401, data: {}, statusText: 'Unauthorized', headers: {}, config },
@@ -52,13 +54,14 @@ describe('apiClient response interceptor', () => {
       throw error
     }) as AxiosAdapter
 
-    await expect(apiClient.get('/secret')).rejects.toThrow('Unauthorized')
+    await expect(messagingApiClient.get('/conversations')).rejects.toThrow('Unauthorized')
     expect(getToken()).toBeNull()
     expect(handler).toHaveBeenCalledTimes(1)
   })
 
   it('leaves the token untouched for non-401 errors', async () => {
-    apiClient.defaults.adapter = (async (config) => {
+    setToken('abc123')
+    messagingApiClient.defaults.adapter = (async (config) => {
       const error = Object.assign(new Error('Server error'), {
         isAxiosError: true,
         response: { status: 500, data: {}, statusText: 'Error', headers: {}, config },
@@ -67,21 +70,7 @@ describe('apiClient response interceptor', () => {
       throw error
     }) as AxiosAdapter
 
-    await expect(apiClient.get('/broken')).rejects.toThrow('Server error')
+    await expect(messagingApiClient.get('/conversations')).rejects.toThrow('Server error')
     expect(getToken()).toBe('abc123')
-  })
-})
-
-describe('triggerUnauthorized', () => {
-  it('invokes the handler registered via onUnauthorized', () => {
-    const handler = vi.fn()
-    onUnauthorized(handler)
-    triggerUnauthorized()
-    expect(handler).toHaveBeenCalledTimes(1)
-  })
-
-  it('does nothing when no handler has been registered', () => {
-    onUnauthorized(undefined as unknown as () => void)
-    expect(() => triggerUnauthorized()).not.toThrow()
   })
 })

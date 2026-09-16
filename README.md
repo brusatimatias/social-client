@@ -12,9 +12,7 @@
 
 # Description
 
-Social App is a React + TypeScript web client for the Social API. It allows users to register, follow each other, create posts (with photos/videos), and comment and like posts.
-
-This first version targets the Social API only — the messaging API is not implemented yet.
+Social App is a React + TypeScript web client for the Social API and the Social Messaging API. It allows users to register, follow each other, create posts (with photos/videos), comment and like posts, and exchange direct messages in real time.
 
 ## Features
 
@@ -28,6 +26,8 @@ This first version targets the Social API only — the messaging API is not impl
 
 - **Followers:** Follow and unfollow other users, and browse followers/following lists.
 
+- **Direct Messaging:** Start a 1:1 conversation with another user and exchange messages in real time.
+
 ## Technologies Used
 
 - **React 19 + TypeScript** — UI library and static typing.
@@ -36,8 +36,10 @@ This first version targets the Social API only — the messaging API is not impl
 - **React Router** — client-side routing.
 - **TanStack Query** — server state, caching, and mutations.
 - **Axios** — HTTP client.
+- **Socket.IO Client** — real-time delivery of incoming direct messages.
 - **Vitest + React Testing Library** — testing.
 - **Social API** — backend used to retrieve/mutate user, post, comment, like, and follow data.
+- **Social Messaging API** — backend used for conversations and direct messages.
 
 ## System Architecture
 
@@ -65,10 +67,11 @@ The client-side architecture diagram provides an overview of how the various com
    cp .env.example .env.local
    ```
 
-5. Edit `.env.local` and point it at your running Social API instance:
+5. Edit `.env.local` and point it at your running Social API and Social Messaging API instances:
 
    ```dotenv
    VITE_API_BASE_URL=http://localhost:3000/api/v1
+   VITE_MESSAGING_API_BASE_URL=http://localhost:3001
    ```
 
 6. Start the application:
@@ -85,3 +88,4 @@ The application will be available at `http://localhost:8000`.
 2. Explore the feed, and follow other users to see their posts.
 3. Create posts (with or without media) and share your content.
 4. Comment and like posts, and manage your profile from `/profile/me`.
+5. Start a direct conversation with another user from `/messages`, and chat in real time.

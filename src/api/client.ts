@@ -11,9 +11,7 @@ export function onUnauthorized(handler: () => void): void {
   unauthorizedHandler = handler
 }
 
-// Lets other API clients (e.g. the messaging API's) reuse the same
-// AuthContext-registered handler on their own 401s, instead of each
-// backend needing its own registration wired up separately.
+// Lets other API clients invoke the same AuthContext-registered handler on their own 401s.
 export function triggerUnauthorized(): void {
   unauthorizedHandler?.()
 }

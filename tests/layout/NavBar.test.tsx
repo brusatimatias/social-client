@@ -25,7 +25,7 @@ function renderNav() {
 describe('NavBar', () => {
   it('renders every primary nav link', () => {
     renderNav()
-    ;['Feed', 'Explore', 'My Posts', 'Followers', 'Following'].forEach((label) => {
+    ;['Feed', 'Explore', 'My Posts', 'Messages', 'Followers', 'Following'].forEach((label) => {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)
     })
   })

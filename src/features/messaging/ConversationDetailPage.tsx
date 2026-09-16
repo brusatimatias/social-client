@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/Skeleton'
 import { TextArea } from '@/components/TextArea'
 import { useAuth } from '@/context/AuthContext'
 import { extractMessagingApiErrors } from '@/lib/errors'
-import { useConversationsQuery } from './useConversationsQuery'
+import { useConversationQuery } from './useConversationsQuery'
 import { useMessagesQuery } from './useMessagesQuery'
 import { useMessagingSelf } from './useMessagingSelf'
 import { useMessagingSocket } from './useMessagingSocket'
@@ -20,7 +20,7 @@ export function ConversationDetailPage() {
   const id = Number(conversationId)
 
   const { user } = useAuth()
-  const { data: conversations } = useConversationsQuery()
+  const { data: conversation } = useConversationQuery(id)
   const { data: messages, isLoading, isError, refetch } = useMessagesQuery(id)
   const { data: self } = useMessagingSelf()
   const sendMessage = useSendMessage(id)
@@ -29,8 +29,7 @@ export function ConversationDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  const conversation = conversations?.find((item) => item.id === id)
-  const other = conversation?.participants.find((participant) => participant.uuid !== user?.uuid)
+  const other = conversation?.participants?.find((participant) => participant.User?.uuid !== user?.uuid)?.User
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: 'end' })

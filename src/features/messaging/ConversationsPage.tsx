@@ -1,11 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
 import { Skeleton } from '@/components/Skeleton'
-import { useAuth } from '@/context/AuthContext'
+import { ConversationListItem } from './ConversationListItem'
 import { NewConversationModal } from './NewConversationModal'
 import { useConversationsQuery } from './useConversationsQuery'
 import { useMessagingSocket } from './useMessagingSocket'
@@ -13,7 +11,6 @@ import { useMessagingSocket } from './useMessagingSocket'
 export function ConversationsPage() {
   useMessagingSocket()
   const [modalOpen, setModalOpen] = useState(false)
-  const { user } = useAuth()
   const { data, isLoading, isError, refetch } = useConversationsQuery()
 
   const conversations = data ?? []
@@ -40,24 +37,9 @@ export function ConversationsPage() {
 
       {conversations.length > 0 && (
         <div className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white px-4">
-          {conversations.map((conversation) => {
-            const other = conversation.participants.find((participant) => participant.uuid !== user?.uuid)
-            return (
-              <Link
-                key={conversation.id}
-                to={`/messages/${conversation.id}`}
-                className="flex items-center gap-3 py-3 hover:bg-gray-50"
-              >
-                <Avatar name={other?.name} lastname={other?.lastname} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-gray-900">{other?.fullName ?? 'Unknown user'}</p>
-                  {conversation.lastMessage && (
-                    <p className="truncate text-sm text-gray-500">{conversation.lastMessage.content}</p>
-                  )}
-                </div>
-              </Link>
-            )
-          })}
+          {conversations.map((conversation) => (
+            <ConversationListItem key={conversation.id} conversation={conversation} />
+          ))}
         </div>
       )}
 

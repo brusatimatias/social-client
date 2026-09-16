@@ -9,3 +9,13 @@ export function extractApiErrors(error: unknown): string[] {
   }
   return ['Something went wrong. Please try again.']
 }
+
+export function extractMessagingApiErrors(error: unknown): string[] {
+  if (error instanceof AxiosError) {
+    const message = error.response?.data?.error?.message
+    if (typeof message === 'string' && message.length > 0) {
+      return [message]
+    }
+  }
+  return ['Something went wrong. Please try again.']
+}

@@ -8,6 +8,7 @@ const links = [
   { to: '/feed', label: 'Feed' },
   { to: '/explore', label: 'Explore' },
   { to: '/posts', label: 'My Posts' },
+  { to: '/messages', label: 'Messages' },
   { to: '/followers', label: 'Followers' },
   { to: '/following', label: 'Following' },
 ]

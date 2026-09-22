@@ -45,7 +45,7 @@ Social App is a React + TypeScript web client for the Social API and the Social 
 
 This diagram outlines the client-side architecture of Project Name, illustrating how clients interact with the application's components:
 
-![System Architecture](doc/Social%20App-architecture.drawio.png)
+![System Architecture](doc/Social%20App-architecture.drawio%20v2.png)
 
 The client-side architecture diagram provides an overview of how the various components of the application work together on the client side. It highlights the interactions between communication with external APIs.
 

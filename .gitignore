@@ -24,3 +24,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+
+# Claude Code
+.claude/settings.local.json
+.claude/.verify-state
+.claude/.verify-attempts

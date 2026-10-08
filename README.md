@@ -4,19 +4,20 @@
 
 - [Description](#description)
 - [Features](#features)
-- [System Architecture](#system-architecture)
 - [Technologies Used](#technologies-used)
+- [System Architecture](#system-architecture)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Configuration of Environment Variables](#configuration-of-environment-variables)
+- [Scripts](#scripts)
 - [Usage](#usage)
 
-# Description
+## Description
 
 Social App is a React + TypeScript web client for the Social API and the Social Messaging API. It allows users to register, follow each other, create posts (with photos/videos), comment and like posts, and exchange direct messages in real time.
 
 ## Features
 
-- **User Registration & Login:** Sign up, log in, update your profile, and delete your account.
+- **User Registration & Login:** Sign up, log in, update your profile (including uploading an avatar), and delete your account.
 
 - **Posts:** Create, edit, and delete posts (public or followers-only, draft/published/archived), optionally with photo/video attachments.
 
@@ -25,6 +26,8 @@ Social App is a React + TypeScript web client for the Social API and the Social 
 - **Comments & Likes:** Comment on posts and like/unlike them.
 
 - **Followers:** Follow and unfollow other users, and browse followers/following lists.
+
+- **Explore:** Search for other users by name and follow them, or follow a post's author directly from the post.
 
 - **Direct Messaging:** Start a 1:1 conversation with another user and exchange messages in real time.
 
@@ -43,11 +46,17 @@ Social App is a React + TypeScript web client for the Social API and the Social 
 
 ## System Architecture
 
-This diagram outlines the client-side architecture of Project Name, illustrating how clients interact with the application's components:
+This diagram outlines the client-side architecture of Social App, illustrating how clients interact with the application's components:
 
 ![System Architecture](doc/Social%20App-architecture.drawio%20v2.png)
 
 The client-side architecture diagram provides an overview of how the various components of the application work together on the client side. It highlights the interactions between communication with external APIs.
+
+## Prerequisites
+
+- **Node.js 22** (the version used in CI) and npm.
+- A running instance of the **Social API** (Rails) and of the **Social Messaging API** (Express + Socket.IO).
+- Both backends must allow CORS from the dev server origin (`http://localhost:8000`). On the Social API this means configuring `rack-cors`; the client can't work around it.
 
 ## Installation
 
@@ -82,10 +91,26 @@ The client-side architecture diagram provides an overview of how the various com
 
 The application will be available at `http://localhost:8000`.
 
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server on port 8000 |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build |
+| `npm run typecheck` | Type-check only (`tsc -b`) |
+| `npm run lint` | Lint with oxlint |
+| `npm test` | Run the test suite once (Vitest) |
+| `npm run test:watch` | Run the tests in watch mode |
+
+Tests live in the top-level `tests/` directory, mirroring the structure of `src/`.
+
+GitHub Actions (`.github/workflows/ci.yml`) runs lint + typecheck, tests, and the production build as parallel jobs on every push to `main`/`develop` and on every pull request.
+
 ## Usage
 
 1. Register or log in to the application.
-2. Explore the feed, and follow other users to see their posts.
+2. Explore the feed, and find other users from `/explore` (or from their posts) to follow them and see their posts.
 3. Create posts (with or without media) and share your content.
 4. Comment and like posts, and manage your profile from `/profile/me`.
 5. Start a direct conversation with another user from `/messages`, and chat in real time.
